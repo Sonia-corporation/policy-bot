@@ -1,0 +1,178 @@
+policy:
+  approval:
+    - or:
+        - Renovate major and minor version upgrades must got 3 dev approvals
+        - Renovate patch version updates, pin of dependencies and lock-files updates are always ok and won't need a review (it's all about trust)
+        - PR to a feature branch is always ok
+        - PR to a bugfix branch is always ok
+        - and:
+            - Techops team must approve infra/ci changes
+            - Security team must approve Trivy changes
+            - Dev team must approve changes
+            - or:
+                - Colossal Penguins team must approve own changes
+                - Sparkling Platypus team must approve own changes
+                - Surfing Otters team must approve own changes
+                - Winged Lions team must approve own changes
+                - Night Foxes team must approve own changes
+
+approval_rules:
+  - name: Dev team must approve changes
+    if:
+      targets_branch:
+        pattern: '^(develop)$'
+    requires:
+      count: 1
+      teams: ['asiainspection/dev-qima-platform']
+    options:
+      allow_contributor: true
+      invalidate_on_push: false
+      ignore_update_merges: true
+      methods:
+        github_review: true
+  - name: Colossal Penguins team must approve own changes
+    if:
+      targets_branch:
+        pattern: '^(develop)$'
+      has_author_in:
+        teams: ['asiainspection/colossal-penguins-qima-platform']
+    requires:
+      count: 1
+      teams: ['asiainspection/colossal-penguins-qima-platform']
+    options:
+      allow_contributor: true
+      invalidate_on_push: false
+      ignore_update_merges: true
+      methods:
+        github_review: true
+  - name: Sparkling Platypus team must approve own changes
+    if:
+      targets_branch:
+        pattern: '^(develop)$'
+      has_author_in:
+        teams: ['asiainspection/sparkling-platypus-qima-platform']
+    requires:
+      count: 1
+      teams: ['asiainspection/sparkling-platypus-qima-platform']
+    options:
+      allow_contributor: true
+      invalidate_on_push: false
+      ignore_update_merges: true
+      methods:
+        github_review: true
+  - name: Surfing Otters team must approve own changes
+    if:
+      targets_branch:
+        pattern: '^(develop)$'
+      has_author_in:
+        teams: ['asiainspection/surfing-otters-qima-platform']
+    requires:
+      count: 1
+      teams: ['asiainspection/surfing-otters-qima-platform']
+    options:
+      allow_contributor: true
+      invalidate_on_push: false
+      ignore_update_merges: true
+      methods:
+        github_review: true
+  - name: Winged Lions team must approve own changes
+    if:
+      targets_branch:
+        pattern: '^(develop)$'
+      has_author_in:
+        teams: ['asiainspection/winged-lions-qima-platform']
+    requires:
+      count: 1
+      teams: ['asiainspection/winged-lions-qima-platform']
+    options:
+      allow_contributor: true
+      invalidate_on_push: false
+      ignore_update_merges: true
+      methods:
+        github_review: true
+  - name: Night Foxes team must approve own changes
+    if:
+      targets_branch:
+        pattern: '^(develop)$'
+      has_author_in:
+        teams: ['asiainspection/night-foxes-qima-platform']
+    requires:
+      count: 1
+      teams: ['asiainspection/night-foxes-qima-platform']
+    options:
+      allow_contributor: true
+      invalidate_on_push: false
+      ignore_update_merges: true
+      methods:
+        github_review: true
+  - name: Techops team must approve infra/ci changes
+    if:
+      targets_branch:
+        pattern: '^(develop)$'
+      changed_files:
+        paths:
+          - '\.circleci/.*'
+          - '.*\.toml$'
+          - '-[(src\/)].*\.yml$|^\..*\.yml$'
+          - '.*Dockerfile$'
+          - '.*Makefile$'
+          - 'DOCKER-COMPOSE\.md'
+          - '^backend/api/src/main/resources/config/liquibase/.*'
+    requires:
+      count: 1
+      teams: ['asiainspection/techops']
+    options:
+      allow_contributor: true
+      invalidate_on_push: false
+      ignore_update_merges: true
+      methods:
+        github_review: true
+  - name: PR to a feature branch is always ok
+    if:
+      targets_branch:
+        pattern: '^(feature\/.+)$'
+  - name: PR to a bugfix branch is always ok
+    if:
+      targets_branch:
+        pattern: '^(bugfix\/.+)$'
+  - name: Security team must approve Trivy changes
+    if:
+      targets_branch:
+        pattern: '^(develop)$'
+      changed_files:
+        paths:
+          - '\.trivyignore'
+    requires:
+      count: 1
+      teams: ['asiainspection/secops']
+    options:
+      allow_contributor: true
+      invalidate_on_push: false
+      ignore_update_merges: true
+      methods:
+        github_review: true
+  - name: Renovate major and minor version upgrades must got 3 dev approvals
+    if:
+      from_branch:
+        pattern: ^(dependencies\/(major|minor))+'
+      targets_branch:
+        pattern: '^(develop)$'
+      has_author_in:
+        users: ['renovate']
+    requires:
+      count: 3
+      teams: ['asiainspection/dev-qima-platform']
+    options:
+      allow_contributor: true
+      invalidate_on_push: false
+      ignore_update_merges: true
+      methods:
+        github_review: true
+  - name: Renovate patch version updates, pin of dependencies and lock-files updates are always ok and won't need a review (it's all about trust)
+    if:
+      from_branch:
+        pattern: '^(dependencies\/(patch|pin|lock-file))+'
+      targets_branch:
+        pattern: '^(develop)$'
+      has_author_in:
+        users: ['renovate']
